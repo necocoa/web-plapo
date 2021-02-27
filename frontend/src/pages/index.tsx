@@ -48,13 +48,23 @@ const Home = () => {
     return () => {
       socket.close();
     };
-  }, []);
+  }, [socket]);
 
   useEffect(() => {
     if (newChat.message) {
       setChats([...chats, newChat]);
     }
-  }, [newChat]);
+  }, [chats, newChat]);
+
+  useEffect(() => {
+    getTopData();
+  }, []);
+
+  const getTopData = async () => {
+    const res = await fetch("http://localhost:3000/");
+    const json = await res.json();
+    console.log(json);
+  };
 
   const handleSubmit = async () => {
     const datetime = dayjs().format("YYYY-MM-DD HH:mm:ss");
@@ -70,6 +80,7 @@ const Home = () => {
         datetime,
       }),
     });
+    console.log(res);
     setMessage("");
   };
 
