@@ -1,19 +1,27 @@
+import { Logger } from '@nestjs/common'
 import {
+  MessageBody,
+  OnGatewayInit,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
   WsResponse,
-  MessageBody,
-} from '@nestjs/websockets';
-import { Server } from 'socket.io';
+} from '@nestjs/websockets'
+import { Server } from 'http'
 
 @WebSocketGateway()
-export class EventsGateway {
+export class EventsGateway implements OnGatewayInit {
   @WebSocketServer()
-  server: Server;
+  server: Server
+
+  private logger = new Logger('AppGateway')
+
+  afterInit() {
+    this.logger.log('Initialized!')
+  }
 
   @SubscribeMessage('message')
   handleMessage(@MessageBody() data: any): WsResponse<string> {
-    return { event: 'message', data: data };
+    return { event: 'message', data: data }
   }
 }
