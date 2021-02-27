@@ -54,21 +54,11 @@ const Home = () => {
     if (newChat.message) {
       setChats([...chats, newChat])
     }
-  }, [chats, newChat])
-
-  useEffect(() => {
-    getTopData()
-  }, [])
-
-  const getTopData = async () => {
-    const res = await fetch(uri)
-    const json = await res.json()
-    console.log(json)
-  }
+  }, [newChat, chats])
 
   const handleSubmit = async () => {
     const datetime = dayjs().format('YYYY-MM-DD HH:mm:ss')
-    const res = await fetch(uri, {
+    await fetch(uri + 'chat', {
       method: 'POST',
       mode: 'cors',
       headers: {
@@ -80,7 +70,6 @@ const Home = () => {
         datetime,
       }),
     })
-    console.log(res)
     setMessage('')
   }
 
