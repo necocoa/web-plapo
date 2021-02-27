@@ -3,9 +3,6 @@ import { Send } from "@material-ui/icons";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import io from "socket.io-client";
-import styled from "styled-components";
-
-type ContainerProps = {};
 
 type ChatType = {
   userName: string;
@@ -13,9 +10,9 @@ type ChatType = {
   datetime: string;
 };
 
-const Home = (props: ContainerProps) => {
-  const uri = "http://localhost:3000";
-  const [socket, _] = useState(() => {
+const Home = () => {
+  const uri = "http://localhost:3001";
+  const [socket] = useState(() => {
     return io(uri);
   });
   const [isConnected, setIsConnected] = useState(false);
@@ -61,7 +58,7 @@ const Home = (props: ContainerProps) => {
 
   const handleSubmit = async () => {
     const datetime = dayjs().format("YYYY-MM-DD HH:mm:ss");
-    await fetch("http://localhost:3000/" + "chat", {
+    const res = await fetch(uri, {
       method: "POST",
       mode: "cors",
       headers: {
@@ -77,8 +74,7 @@ const Home = (props: ContainerProps) => {
   };
 
   return (
-    <StyledComponent
-      {...props}
+    <Component
       isConnected={isConnected}
       chats={chats}
       userName={userName}
@@ -90,7 +86,7 @@ const Home = (props: ContainerProps) => {
   );
 };
 
-type Props = ContainerProps & {
+type Props = {
   className?: string;
   isConnected: boolean;
   chats: ChatType[];
@@ -164,12 +160,5 @@ const Component = (props: Props) => {
     </Container>
   );
 };
-
-const StyledComponent = styled(Component)`
-  .name {
-    font-weight: 700;
-    padding-right: 5px;
-  }
-`;
 
 export default Home;
