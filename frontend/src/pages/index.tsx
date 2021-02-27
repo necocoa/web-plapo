@@ -1,88 +1,88 @@
-import { Avatar, Box, Button, Container, InputBase, Paper, Typography } from "@material-ui/core";
-import { Send } from "@material-ui/icons";
-import dayjs from "dayjs";
-import { useEffect, useState } from "react";
-import io from "socket.io-client";
+import { Avatar, Box, Button, Container, InputBase, Paper, Typography } from '@material-ui/core'
+import { Send } from '@material-ui/icons'
+import dayjs from 'dayjs'
+import { useEffect, useState } from 'react'
+import io from 'socket.io-client'
 
 type ChatType = {
-  userName: string;
-  message: string;
-  datetime: string;
-};
+  userName: string
+  message: string
+  datetime: string
+}
 
 const Home = () => {
-  const uri = "http://localhost:3001";
+  const uri = 'http://localhost:3000'
   const [socket] = useState(() => {
-    return io(uri);
-  });
-  const [isConnected, setIsConnected] = useState(false);
+    return io(uri)
+  })
+  const [isConnected, setIsConnected] = useState(false)
   const [newChat, setNewChat] = useState<ChatType>({
-    userName: "",
-    message: "",
-    datetime: "",
-  });
+    userName: '',
+    message: '',
+    datetime: '',
+  })
   const [chats, setChats] = useState<ChatType[]>([
     {
-      userName: "TEST BOT",
-      message: "Hello World",
-      datetime: "2020-09-01 12:00:00",
+      userName: 'TEST BOT',
+      message: 'Hello World',
+      datetime: '2020-09-01 12:00:00',
     },
-  ]);
-  const [userName, setUserName] = useState<string>("");
-  const [message, setMessage] = useState<string>("");
+  ])
+  const [userName, setUserName] = useState<string>('')
+  const [message, setMessage] = useState<string>('')
 
   useEffect(() => {
-    socket.on("connect", () => {
-      console.log("socket connected!!");
-      setIsConnected(true);
-    });
-    socket.on("disconnect", () => {
-      console.log("socket disconnected!!");
-      setIsConnected(false);
-    });
-    socket.on("update-data", (newData: ChatType) => {
-      console.log("Get Updated Data", newData);
-      setNewChat(newData);
-    });
+    socket.on('connect', () => {
+      console.log('socket connected!!')
+      setIsConnected(true)
+    })
+    socket.on('disconnect', () => {
+      console.log('socket disconnected!!')
+      setIsConnected(false)
+    })
+    socket.on('update-data', (newData: ChatType) => {
+      console.log('Get Updated Data', newData)
+      setNewChat(newData)
+    })
 
     return () => {
-      socket.close();
-    };
-  }, [socket]);
+      socket.close()
+    }
+  }, [socket])
 
   useEffect(() => {
     if (newChat.message) {
-      setChats([...chats, newChat]);
+      setChats([...chats, newChat])
     }
-  }, [chats, newChat]);
+  }, [chats, newChat])
 
   useEffect(() => {
-    getTopData();
-  }, []);
+    getTopData()
+  }, [])
 
   const getTopData = async () => {
-    const res = await fetch("http://localhost:3000/");
-    const json = await res.json();
-    console.log(json);
-  };
+    const res = await fetch(uri)
+    const json = await res.json()
+    console.log(json)
+  }
 
   const handleSubmit = async () => {
-    const datetime = dayjs().format("YYYY-MM-DD HH:mm:ss");
+    const datetime = dayjs().format('YYYY-MM-DD HH:mm:ss')
     const res = await fetch(uri, {
-      method: "POST",
-      mode: "cors",
+      method: 'POST',
+      mode: 'cors',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         userName,
         message,
         datetime,
       }),
-    });
-    console.log(res);
-    setMessage("");
-  };
+    })
+    console.log(res)
+    setMessage('')
+  }
 
   return (
     <Component
@@ -94,19 +94,19 @@ const Home = () => {
       setMessage={setMessage}
       handleSubmit={handleSubmit}
     />
-  );
-};
+  )
+}
 
 type Props = {
-  className?: string;
-  isConnected: boolean;
-  chats: ChatType[];
-  userName: string;
-  message: string;
-  setUserName: (value: string) => void;
-  setMessage: (value: string) => void;
-  handleSubmit: () => void;
-};
+  className?: string
+  isConnected: boolean
+  chats: ChatType[]
+  userName: string
+  message: string
+  setUserName: (value: string) => void
+  setMessage: (value: string) => void
+  handleSubmit: () => void
+}
 
 const Component = (props: Props) => {
   return (
@@ -117,17 +117,17 @@ const Component = (props: Props) => {
             return (
               <Paper key={index} variant="outlined">
                 <Box display="flex" p={1}>
-                  <Avatar variant="square">{chat.userName.slice(0, 1).toUpperCase() || "T"}</Avatar>
+                  <Avatar variant="square">{chat.userName.slice(0, 1).toUpperCase() || 'T'}</Avatar>
                   <Box pl={1.5}>
                     <Box display="flex" alignItems="center">
-                      <Typography className="name">{chat.userName || "TEST BOT"}</Typography>
-                      <Typography variant="caption">{dayjs(chat.datetime).format("HH:mm")}</Typography>
+                      <Typography className="name">{chat.userName || 'TEST BOT'}</Typography>
+                      <Typography variant="caption">{dayjs(chat.datetime).format('HH:mm')}</Typography>
                     </Box>
                     <Typography>{chat.message}</Typography>
                   </Box>
                 </Box>
               </Paper>
-            );
+            )
           })}
         </Box>
         <Box border={1} borderRadius={5} borderColor="grey.500" mb={1}>
@@ -136,7 +136,7 @@ const Component = (props: Props) => {
               placeholder="name"
               value={props.userName}
               onChange={(e) => {
-                return props.setUserName(e.target.value);
+                return props.setUserName(e.target.value)
               }}
               fullWidth
             />
@@ -145,7 +145,7 @@ const Component = (props: Props) => {
               placeholder="message"
               value={props.message}
               onChange={(e) => {
-                return props.setMessage(e.target.value);
+                return props.setMessage(e.target.value)
               }}
               fullWidth
               multiline
@@ -160,7 +160,7 @@ const Component = (props: Props) => {
               size="medium"
               disabled={!props.message || !props.isConnected}
               onClick={() => {
-                return props.handleSubmit();
+                return props.handleSubmit()
               }}
             >
               <Send />
@@ -169,7 +169,7 @@ const Component = (props: Props) => {
         </Box>
       </Box>
     </Container>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home

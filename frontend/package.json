@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --port 5000",
     "build": "next build",
     "start": "next start",
     "lint": "run-p -l -c --aggregate-output lint:*",
@@ -14,9 +14,6 @@
     "fix:prettier": "npm run lint:prettier -- --write",
     "test": "run-p -l -c --aggregate-output lint:* unit",
     "unit": "jest"
-  },
-  "prettier": {
-    "printWidth": 120
   },
   "dependencies": {
     "@material-ui/core": "^4.11.3",
