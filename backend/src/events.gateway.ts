@@ -31,6 +31,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
   @SubscribeMessage('message')
   handleMessage(@MessageBody() data: any): WsResponse<string> {
+    this.logger.log(`Send message: ${JSON.stringify(data)}`)
     return { event: 'message', data: data }
   }
 }

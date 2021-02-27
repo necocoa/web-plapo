@@ -40,8 +40,8 @@ const Home = () => {
       console.log('socket disconnected!!')
       setIsConnected(false)
     })
-    socket.on('update-data', (newData: ChatType) => {
-      console.log('Get Updated Data', newData)
+    socket.on('message', (newData: ChatType) => {
+      console.log('recv:', newData)
       setNewChat(newData)
     })
 
@@ -54,22 +54,17 @@ const Home = () => {
     if (newChat.message) {
       setChats([...chats, newChat])
     }
-  }, [newChat, chats])
+  }, [newChat])
 
   const handleSubmit = async () => {
     const datetime = dayjs().format('YYYY-MM-DD HH:mm:ss')
-    await fetch(uri + 'chat', {
-      method: 'POST',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        userName,
-        message,
-        datetime,
-      }),
-    })
+    const data = {
+      userName,
+      message,
+      datetime,
+    }
+    console.log('send:', data)
+    socket.emit('message', data)
     setMessage('')
   }
 
