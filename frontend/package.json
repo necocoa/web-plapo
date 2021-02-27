@@ -15,27 +15,31 @@
     "test": "run-p -l -c --aggregate-output lint:* unit",
     "unit": "jest"
   },
-  "babel": {
-    "presets": [
-      "next/babel"
-    ]
-  },
   "prettier": {
     "printWidth": 120
   },
   "dependencies": {
+    "@material-ui/core": "^4.11.3",
+    "@material-ui/icons": "^4.11.2",
+    "dayjs": "^1.10.4",
     "next": "10.0.7",
     "react": "17.0.1",
-    "react-dom": "17.0.1"
+    "react-dom": "17.0.1",
+    "sass": "^1.32.8",
+    "socket.io-client": "^3.1.2",
+    "styled-components": "^5.2.1"
   },
   "devDependencies": {
     "@testing-library/react": "11.2.5",
     "@types/jest": "26.0.20",
     "@types/node": "14.14.31",
     "@types/react": "17.0.2",
+    "@types/socket.io-client": "^1.4.35",
+    "@types/styled-components": "^5.1.7",
     "@typescript-eslint/eslint-plugin": "4.15.2",
     "@typescript-eslint/parser": "4.15.2",
     "babel-jest": "26.6.3",
+    "babel-plugin-styled-components": "^1.12.0",
     "eslint": "7.20.0",
     "eslint-config-prettier": "8.1.0",
     "eslint-plugin-import": "2.22.1",
