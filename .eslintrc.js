@@ -24,6 +24,5 @@ module.exports = {
     'import/no-default-export': 'error',
     'simple-import-sort/imports': 'error',
     'simple-import-sort/exports': 'error',
-    '@typescript-eslint/consistent-type-imports': ['warn', { prefer: 'type-imports' }],
   },
 }
