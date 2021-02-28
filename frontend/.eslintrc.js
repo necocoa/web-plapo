@@ -13,6 +13,7 @@ module.exports = {
     'plugin:jsx-a11y/recommended',
     'prettier',
   ],
+  ignorePatterns: ['out/', '.next/'],
   rules: {
     'no-console': 'off',
     'no-restricted-syntax': ['error', { selector: 'TSEnumDeclaration', message: "Don't declare enums" }],
