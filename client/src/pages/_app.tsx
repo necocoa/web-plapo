@@ -1,9 +1,9 @@
 import CssBaseline from '@material-ui/core/CssBaseline'
 import { ThemeProvider } from '@material-ui/core/styles'
-import { theme } from 'components/theme'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
 import { useEffect } from 'react'
+import { theme } from 'src/components/theme'
 
 export default function MyApp(props: AppProps) {
   useEffect(() => {
