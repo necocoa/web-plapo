@@ -1,7 +1,7 @@
 {
-  "name": "nexst",
+  "name": "frontend",
   "version": "1.0.0",
-  "license": "MIT",
+  "license": "UNLICENCE",
   "scripts": {
     "dev": "next dev --port 5000",
     "build": "next build",

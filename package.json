@@ -1,0 +1,14 @@
+{
+  "name": "next-websocket",
+  "version": "1.0.0",
+  "license": "UNLICENCE",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "b:start": "yarn workspace backend start:dev",
+    "f:start": "yarn workspace frontend start"
+  }
+}
