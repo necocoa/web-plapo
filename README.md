@@ -8,9 +8,9 @@ yarn add -WD eslint
 ```
 
 ワークスペースに追加する場合は、workspace を指定する
-`yarn workspace backend`は長いので、`yarn b`の scripts を作ってある
+`yarn workspace server`は長いので、`yarn se`の scripts を作ってある
 
 ```sh
-yarn workspace backend add ts-node
-yarn b add ts-node
+yarn workspace server add ts-node
+yarn se add ts-node
 ```

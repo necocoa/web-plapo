@@ -4,20 +4,20 @@
   "license": "UNLICENSED",
   "private": true,
   "workspaces": [
-    "backend",
-    "frontend"
+    "server",
+    "client"
   ],
   "scripts": {
-    "b": "yarn workspace backend",
-    "f": "yarn workspace frontend",
-    "b:dev": "yarn b start:dev",
-    "f:dev": "yarn f dev",
-    "b:lint": "yarn b lint",
-    "f:lint": "yarn f lint",
-    "all:lint": "run-p b:lint f:lint",
-    "b:format": "yarn b format",
-    "f:format": "yarn f format",
-    "all:format": "run-p b:format f:format"
+    "se": "yarn workspace server",
+    "cl": "yarn workspace client",
+    "se:dev": "yarn se start:dev",
+    "cl:dev": "yarn cl dev",
+    "se:lint": "yarn se lint",
+    "cl:lint": "yarn cl lint",
+    "all:lint": "run-p se:lint cl:lint",
+    "se:format": "yarn se format",
+    "cl:format": "yarn cl format",
+    "all:format": "run-p se:format cl:format"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.15.2",
