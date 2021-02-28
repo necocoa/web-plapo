@@ -13,7 +13,11 @@
     "b:install": "yarn b install",
     "f:install": "yarn f install",
     "b:dev": "yarn b start:dev",
-    "f:dev": "yarn f dev"
+    "f:dev": "yarn f dev",
+    "b:lint": "yarn b lint",
+    "f:lint": "yarn f lint",
+    "b:format": "yarn b format",
+    "f:format": "yarn f format"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.15.2",
