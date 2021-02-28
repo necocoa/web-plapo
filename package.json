@@ -1,14 +1,22 @@
 {
   "name": "next-websocket",
   "version": "1.0.0",
-  "license": "UNLICENCE",
+  "license": "UNLICENSED",
   "private": true,
   "workspaces": [
     "backend",
     "frontend"
   ],
   "scripts": {
-    "b:start": "yarn workspace backend start:dev",
-    "f:start": "yarn workspace frontend start"
+    "b": "yarn workspace backend",
+    "f": "yarn workspace frontend",
+    "b:install": "yarn b install",
+    "f:install": "yarn f install",
+    "b:dev": "yarn b start:dev",
+    "f:dev": "yarn f dev"
+  },
+  "devDependencies": {
+    "eslint": "^7.21.0",
+    "prettier": "^2.2.1"
   }
 }
