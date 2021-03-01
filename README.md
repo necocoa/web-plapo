@@ -1,3 +1,13 @@
+## Getting start
+
+```
+yarn cl:dev
+yarn se:dev
+```
+
+Client: http://localhost:3000
+Server: http://localhost:3001
+
 ## パッケージ管理
 
 Yarn workspace を使って monorepo 運用を行っている
