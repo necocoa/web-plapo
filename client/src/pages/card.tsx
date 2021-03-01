@@ -74,6 +74,8 @@ const Home: NextPage = () => {
 
   const cardClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault()
+    if (userID === null) return
+
     const cardNumStr = event.currentTarget.dataset.num
     if (!cardNumStr) return
     const cardNum = parseInt(cardNumStr) as CardNum
