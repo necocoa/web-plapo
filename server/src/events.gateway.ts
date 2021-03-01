@@ -14,7 +14,7 @@ import { Server, Socket } from 'socket.io'
 @WebSocketGateway()
 export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
-  server: Server
+  wss: Server
 
   private logger = new Logger('AppGateway')
 
@@ -25,6 +25,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   handleConnection(client: Socket, ..._args: any[]) {
     this.logger.log(`Client connected:    ${client.id}`)
   }
+
   handleDisconnect(client: Socket) {
     this.logger.log(`Client disconnected: ${client.id}`)
   }
@@ -32,6 +33,12 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   @SubscribeMessage('message')
   handleMessage(@MessageBody() data: any): WsResponse<string> {
     this.logger.log(`Send message: ${JSON.stringify(data)}`)
-    return { event: 'message', data: data }
+    return { event: 'message', data }
+  }
+
+  @SubscribeMessage('room')
+  handleRoom(@MessageBody() data: any): void {
+    this.logger.log(`${JSON.stringify(data)}`)
+    this.wss.emit('room', data)
   }
 }
