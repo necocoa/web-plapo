@@ -11,7 +11,7 @@ type ChatType = {
 }
 
 const Home = () => {
-  const uri = 'http://localhost:3000'
+  const uri = 'http://localhost:3001'
   const [socket] = useState(() => {
     return io(uri)
   })
