@@ -10,11 +10,10 @@ type CardType = {
   cardNum: CardNum
 }
 
+const URI = 'http://localhost:3001'
+const socket = io(URI)
+
 const Home: NextPage = () => {
-  const uri = 'http://localhost:3001'
-  const [socket] = useState(() => {
-    return io(uri)
-  })
   const [isConnected, setIsConnected] = useState(false)
   const cardsNum: CardNum[] = [0, 1, 2, 3, 5, 8, 13, 21, 44]
   const [users, setUsers] = useState<CardType[]>([])
@@ -70,7 +69,7 @@ const Home: NextPage = () => {
     return () => {
       socket.close()
     }
-  }, [socket])
+  }, [])
 
   const cardClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault()
