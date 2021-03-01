@@ -1,10 +1,12 @@
 import type { NextPage } from 'next'
+import { parseCookies, setCookie } from 'nookies'
 import { useEffect, useState } from 'react'
 import io from 'socket.io-client'
+import { getUniqueStr } from 'src/libs/common'
 
 type CardNum = 0 | 1 | 2 | 3 | 5 | 8 | 13 | 21 | 44
 type CardType = {
-  userId: string
+  userID: string
   cardNum: CardNum
 }
 
@@ -16,7 +18,34 @@ const Home: NextPage = () => {
   const [isConnected, setIsConnected] = useState(false)
   const cardsNum: CardNum[] = [0, 1, 2, 3, 5, 8, 13, 21, 44]
   const [users, setUsers] = useState<CardType[]>([])
-  const userId = 'test'
+  const [userID, setUserID] = useState<string | null>(null)
+
+  const getUserIDFromCookies = () => {
+    const cookies = parseCookies()
+    const _userID = cookies.userID as string | undefined
+    return _userID || null
+  }
+
+  const setUserIDToCookies = (value: string) => {
+    setCookie(null, 'userID', value, {
+      maxAge: 30 * 24 * 60 * 60,
+      path: '/',
+    })
+  }
+
+  useEffect(() => {
+    if (typeof userID === 'string') return
+
+    const _userID = getUserIDFromCookies()
+    if (typeof _userID === 'string') {
+      setUserID(_userID)
+      return
+    }
+
+    const newUserID = getUniqueStr()
+    setUserID(newUserID)
+    setUserIDToCookies(newUserID)
+  }, [userID])
 
   useEffect(() => {
     socket.on('connect', () => {
@@ -31,7 +60,7 @@ const Home: NextPage = () => {
       setUsers((prevState) => {
         return [
           ...prevState.filter((state) => {
-            return state.userId !== data.userId
+            return state.userID !== data.userID
           }),
           data,
         ]
@@ -48,7 +77,7 @@ const Home: NextPage = () => {
     const cardNumStr = event.currentTarget.dataset.num
     if (!cardNumStr) return
     const cardNum = parseInt(cardNumStr) as CardNum
-    const data: CardType = { userId, cardNum }
+    const data: CardType = { userID, cardNum }
     socket.emit('room', data)
   }
 
@@ -62,7 +91,7 @@ const Home: NextPage = () => {
         {users.map((user, index) => {
           return (
             <div key={index}>
-              <dd>{user.userId}</dd>
+              <dd>{user.userID}</dd>
               <dt>{user.cardNum}</dt>
             </div>
           )
