@@ -20,13 +20,9 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     socket.on('connect', () => {
-      console.log('socket connected!!')
       setIsConnected(true)
     })
-    socket.on('disconnect', () => {
-      console.log('socket disconnected!!')
-      setIsConnected(false)
-    })
+
     socket.on('room', (data: CardType) => {
       setUsers((prevState) => {
         return [
