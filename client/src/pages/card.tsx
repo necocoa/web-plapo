@@ -17,7 +17,7 @@ const Home: NextPage = () => {
   const cardsNum: CardNum[] = [0, 1, 2, 3, 5, 8, 13, 21, 44]
   const userID = useUserID()
   const [users, setUsers] = useState<CardType[]>([])
-  const [isConnected, setIsConnected] = useState(true)
+  const [isConnected, setIsConnected] = useState(false)
 
   useEffect(() => {
     socket.on('connect', () => {
