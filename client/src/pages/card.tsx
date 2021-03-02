@@ -1,3 +1,4 @@
+import { publicEnv } from 'env'
 import type { NextPage } from 'next'
 import { useEffect, useState } from 'react'
 import io from 'socket.io-client'
@@ -9,11 +10,9 @@ type CardType = {
   cardNum: CardNum
 }
 
-const URI = 'http://localhost:3001'
-
 const Home: NextPage = () => {
   const [socket, setSocket] = useState(() => {
-    return io(URI)
+    return io(publicEnv.apiURL)
   })
   const cardsNum: CardNum[] = [0, 1, 2, 3, 5, 8, 13, 21, 44]
   const userID = useUserID()
@@ -52,7 +51,7 @@ const Home: NextPage = () => {
     console.log('socket reconnected!!')
     socket.close()
     setSocket(() => {
-      return io(URI)
+      return io(publicEnv.apiURL)
     })
   }, [isConnected])
 

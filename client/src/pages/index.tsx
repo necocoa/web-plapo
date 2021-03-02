@@ -1,6 +1,7 @@
 import { Avatar, Box, Button, Container, InputBase, Paper, Typography } from '@material-ui/core'
 import { Send } from '@material-ui/icons'
 import dayjs from 'dayjs'
+import { publicEnv } from 'env'
 import type { NextPage } from 'next'
 import { useEffect, useState } from 'react'
 import io from 'socket.io-client'
@@ -11,11 +12,9 @@ type ChatType = {
   datetime: string
 }
 
-const URI = 'http://localhost:3001'
-
 const Home: NextPage = () => {
   const [socket, setSocket] = useState(() => {
-    return io(URI)
+    return io(publicEnv.apiURL)
   })
   const [isConnected, setIsConnected] = useState(false)
   const [newChat, setNewChat] = useState<ChatType>({
@@ -64,7 +63,7 @@ const Home: NextPage = () => {
     console.log('socket reconnected!!')
     socket.close()
     setSocket(() => {
-      return io(URI)
+      return io(publicEnv.apiURL)
     })
   }, [isConnected])
 

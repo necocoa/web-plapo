@@ -19,7 +19,9 @@
     "cl:format": "yarn cl format",
     "all:format": "run-p se:format cl:format",
     "cl:deploy:prev": "vercel",
-    "cl:deploy:prod": "vercel --prod"
+    "cl:deploy:prod": "vercel --prod",
+    "vercel": "vercel",
+    "vercel:env:pull": "vercel env pull ./client/.env.local"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.15.2",
