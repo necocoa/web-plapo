@@ -10,17 +10,24 @@ type CardType = {
 }
 
 const URI = 'http://localhost:3001'
-const socket = io(URI)
 
 const Home: NextPage = () => {
+  const [socket, setSocket] = useState(() => {
+    return io(URI)
+  })
   const cardsNum: CardNum[] = [0, 1, 2, 3, 5, 8, 13, 21, 44]
   const userID = useUserID()
   const [users, setUsers] = useState<CardType[]>([])
-  const [isConnected, setIsConnected] = useState(false)
+  const [isConnected, setIsConnected] = useState(true)
 
   useEffect(() => {
     socket.on('connect', () => {
+      console.log('socket connected!!')
       setIsConnected(true)
+    })
+    socket.on('disconnect', () => {
+      console.log('socket disconnected!!')
+      setIsConnected(false)
     })
 
     socket.on('room', (data: CardType) => {
@@ -37,7 +44,17 @@ const Home: NextPage = () => {
     return () => {
       socket.close()
     }
-  }, [])
+  }, [socket])
+
+  useEffect(() => {
+    if (isConnected) return
+
+    console.log('socket reconnected!!')
+    socket.close()
+    setSocket(() => {
+      return io(URI)
+    })
+  }, [isConnected])
 
   const cardClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault()
