@@ -23,6 +23,4 @@ ENV NODE_ENV production
 
 RUN yarn install --pure-lockfile --non-interactive --prod
 
-# CMD ["yarn", "se", "start"]
-
-ENTRYPOINT ["/bin/sh", "-c", "while :; do sleep 10; done"]
+CMD ["node", "server/dist/main"]
