@@ -1,3 +1,21 @@
+## 仕様技術
+
+- クライアント
+
+  - Next.js
+  - vercel
+
+- サーバー API
+  - NestJS
+  - Cloud Run
+
+## ディレクトリ構成
+
+- `client/`
+  - Next.js
+- `server/`
+  - NestJS
+
 ## Getting start
 
 ```
@@ -7,6 +25,29 @@ yarn se:dev
 
 Client: http://localhost:3000
 Server: http://localhost:3001
+
+## デプロイ
+
+プレビュー環境
+
+```sh
+yarn cl:deploy:prev
+```
+
+本番環境
+
+### クライアント
+
+```sh
+yarn cl:deploy:prod
+```
+
+### サーバー
+
+```sh
+gcloud builds submit --tag gcr.io/web-plapo/api
+gcloud run deploy --image gcr.io/web-plapo/api --platform managed
+```
 
 ## パッケージ管理
 
