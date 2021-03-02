@@ -1,3 +1,4 @@
+import { publicEnv } from 'env'
 import type { NextPage } from 'next'
 import { useEffect, useState } from 'react'
 import io from 'socket.io-client'
@@ -9,10 +10,10 @@ type CardType = {
   cardNum: CardNum
 }
 
-const URI = 'http://localhost:3001'
-const socket = io(URI)
-
 const Home: NextPage = () => {
+  const [socket, setSocket] = useState(() => {
+    return io(publicEnv.apiURL)
+  })
   const cardsNum: CardNum[] = [0, 1, 2, 3, 5, 8, 13, 21, 44]
   const userID = useUserID()
   const [users, setUsers] = useState<CardType[]>([])
@@ -20,7 +21,12 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     socket.on('connect', () => {
+      console.log('socket connected!!')
       setIsConnected(true)
+    })
+    socket.on('disconnect', () => {
+      console.log('socket disconnected!!')
+      setIsConnected(false)
     })
 
     socket.on('room', (data: CardType) => {
@@ -37,7 +43,17 @@ const Home: NextPage = () => {
     return () => {
       socket.close()
     }
-  }, [])
+  }, [socket])
+
+  useEffect(() => {
+    if (isConnected) return
+
+    console.log('socket reconnected!!')
+    socket.close()
+    setSocket(() => {
+      return io(publicEnv.apiURL)
+    })
+  }, [isConnected])
 
   const cardClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault()
