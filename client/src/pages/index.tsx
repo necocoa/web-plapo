@@ -1,36 +1,23 @@
-import { Avatar, Box, Button, Container, InputBase, Paper, Typography } from '@material-ui/core'
-import { Send } from '@material-ui/icons'
-import dayjs from 'dayjs'
 import { publicEnv } from 'env'
 import type { NextPage } from 'next'
 import { useEffect, useState } from 'react'
 import io from 'socket.io-client'
+import { useUserID } from 'src/hooks/useUserID'
 
-type ChatType = {
-  userName: string
-  message: string
-  datetime: string
+type CardNum = 0 | 1 | 2 | 3 | 5 | 8 | 13 | 21 | 44
+type CardType = {
+  userID: string
+  cardNum: CardNum
 }
 
 const Home: NextPage = () => {
   const [socket, setSocket] = useState(() => {
     return io(publicEnv.apiURL)
   })
+  const cardsNum: CardNum[] = [0, 1, 2, 3, 5, 8, 13, 21, 44]
+  const userID = useUserID()
+  const [users, setUsers] = useState<CardType[]>([])
   const [isConnected, setIsConnected] = useState(false)
-  const [newChat, setNewChat] = useState<ChatType>({
-    userName: '',
-    message: '',
-    datetime: '',
-  })
-  const [chats, setChats] = useState<ChatType[]>([
-    {
-      userName: 'TEST BOT',
-      message: 'Hello World',
-      datetime: '2020-09-01 12:00:00',
-    },
-  ])
-  const [userName, setUserName] = useState<string>('')
-  const [message, setMessage] = useState<string>('')
 
   useEffect(() => {
     socket.on('connect', () => {
@@ -41,21 +28,22 @@ const Home: NextPage = () => {
       console.log('socket disconnected!!')
       setIsConnected(false)
     })
-    socket.on('message', (newData: ChatType) => {
-      console.log('recv:', newData)
-      setNewChat(newData)
+
+    socket.on('room', (data: CardType) => {
+      setUsers((prevState) => {
+        return [
+          ...prevState.filter((state) => {
+            return state.userID !== data.userID
+          }),
+          data,
+        ]
+      })
     })
 
     return () => {
       socket.close()
     }
   }, [socket])
-
-  useEffect(() => {
-    if (newChat.message) {
-      setChats([...chats, newChat])
-    }
-  }, [newChat])
 
   useEffect(() => {
     if (isConnected) return
@@ -65,106 +53,59 @@ const Home: NextPage = () => {
     setSocket(() => {
       return io(publicEnv.apiURL)
     })
-  }, [isConnected])
+  }, [isConnected]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleSubmit = async () => {
-    const datetime = dayjs().format('YYYY-MM-DD HH:mm:ss')
-    const data = {
-      userName,
-      message,
-      datetime,
-    }
-    console.log('send:', data)
-    socket.emit('message', data)
-    setMessage('')
+  const cardClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.preventDefault()
+    const cardNumStr = event.currentTarget.dataset.num
+    if (!cardNumStr) return
+    const cardNum = parseInt(cardNumStr) as CardNum
+    const data: CardType = { userID, cardNum }
+    socket.emit('room', data)
   }
 
   return (
-    <Component
-      isConnected={isConnected}
-      chats={chats}
-      userName={userName}
-      message={message}
-      setUserName={setUserName}
-      setMessage={setMessage}
-      handleSubmit={handleSubmit}
-    />
-  )
-}
-
-type Props = {
-  className?: string
-  isConnected: boolean
-  chats: ChatType[]
-  userName: string
-  message: string
-  setUserName: (value: string) => void
-  setMessage: (value: string) => void
-  handleSubmit: () => void
-}
-
-const Component = (props: Props) => {
-  return (
-    <Container maxWidth="sm" className={props.className}>
-      <Box height="100vh" display="flex" flexDirection="column">
-        <Box flexGrow={1} py={1} overflow="hidden" display="flex" flexDirection="column" justifyContent="flex-end">
-          {props.chats.map((chat, index) => {
-            return (
-              <Paper key={index} variant="outlined">
-                <Box display="flex" p={1}>
-                  <Avatar variant="square">{chat.userName.slice(0, 1).toUpperCase() || 'T'}</Avatar>
-                  <Box pl={1.5}>
-                    <Box display="flex" alignItems="center">
-                      <Typography className="name">{chat.userName || 'TEST BOT'}</Typography>
-                      <Typography variant="caption">{dayjs(chat.datetime).format('HH:mm')}</Typography>
-                    </Box>
-                    <Typography>{chat.message}</Typography>
-                  </Box>
-                </Box>
-              </Paper>
-            )
-          })}
-        </Box>
-        <Box border={1} borderRadius={5} borderColor="grey.500" mb={1}>
-          <Box px={2}>
-            <InputBase
-              placeholder="name"
-              value={props.userName}
-              onChange={(e) => {
-                return props.setUserName(e.target.value)
-              }}
-              fullWidth
-            />
-            <InputBase
-              required
-              placeholder="message"
-              value={props.message}
-              onChange={(e) => {
-                return props.setMessage(e.target.value)
-              }}
-              fullWidth
-              multiline
-              rows={3}
-            />
-          </Box>
-          <Box display="flex" justifyContent="flex-end">
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              size="medium"
-              disabled={!props.message || !props.isConnected}
-              onClick={() => {
-                return props.handleSubmit()
-              }}
-            >
-              <Send />
-            </Button>
-          </Box>
-        </Box>
-      </Box>
-    </Container>
+    <div className="px-20 pt-4">
+      <header>
+        <h1 className="py-4 text-lg font-semibold">プランニングポーカー部屋</h1>
+      </header>
+      <div className="py-4">{isConnected ? 'コネクト中' : 'ディスコネクト中'}</div>
+      <div className="py-4">
+        {users.map((user, index) => {
+          return (
+            <div key={index}>
+              <dd>{user.userID}</dd>
+              <dt>{user.cardNum}</dt>
+            </div>
+          )
+        })}
+      </div>
+      <div>
+        {cardsNum.map((num, index) => {
+          return <Card key={index} num={num} disabled={!isConnected} onClick={cardClick} />
+        })}
+      </div>
+    </div>
   )
 }
 
 export default Home
+
+type CardProps = {
+  num: CardNum
+  disabled: boolean
+  onClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
+}
+const Card: React.VFC<CardProps> = (props) => {
+  return (
+    <button
+      type="button"
+      onClick={props.onClick}
+      disabled={props.disabled}
+      data-num={props.num}
+      className="px-4 py-2 mx-2 font-semibold text-white bg-blue-400 rounded shadow focus:opacity-80 focus:shadow-none disabled:bg-gray-300 disabled:shadow-none disabled:cursor-default"
+    >
+      {props.num}
+    </button>
+  )
+}
