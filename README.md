@@ -16,9 +16,18 @@
 - `server/`
   - NestJS
 
+## Set up
+
+```sh
+yarn
+yarn vercel:env:pull
+docker run -d -p 6379:6379 --name web-plapo_redis_local redis
+```
+
 ## Getting start
 
 ```
+docker start web-plapo_redis_local
 yarn cl:dev
 yarn se:dev
 ```
