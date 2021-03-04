@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common'
+import { CACHE_MANAGER, Inject, Logger } from '@nestjs/common'
 import {
   MessageBody,
   OnGatewayConnection,
@@ -8,6 +8,7 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets'
+import { Cache } from 'cache-manager'
 import { Server, Socket } from 'socket.io'
 
 @WebSocketGateway()
@@ -15,6 +16,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   @WebSocketServer()
   wss: Server
 
+  constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
   private logger = new Logger('AppGateway')
 
   afterInit() {
@@ -40,5 +42,22 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   @SubscribeMessage('member')
   handleMember(@MessageBody() data: any): void {
     this.wss.emit('member', data)
+  }
+
+  @SubscribeMessage('cache')
+  handleCache(@MessageBody() data: any): void {
+    const handle = async () => {
+      const cacheRes = await this.cacheManager.get<string>('member')
+      let cacheData = {}
+      if (cacheRes) {
+        cacheData = JSON.parse(cacheRes)
+      }
+      const setData = { ...cacheData, ...data }
+      console.log(setData)
+      const setDataStr = JSON.stringify(setData)
+      await this.cacheManager.set('member', setDataStr, { ttl: 1000 })
+      this.wss.emit('cache', setData)
+    }
+    handle()
   }
 }
