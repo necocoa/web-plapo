@@ -9,6 +9,10 @@ type CardType = {
   userID: string
   cardNum: CardNum
 }
+type MemberResType = {
+  userID: string
+  action: 'join' | 'leave'
+}
 
 const Home: NextPage = () => {
   const [socket, setSocket] = useState(() => {
@@ -17,16 +21,41 @@ const Home: NextPage = () => {
   const cardsNum: CardNum[] = [0, 1, 2, 3, 5, 8, 13, 21, 44]
   const userID = useUserID()
   const [users, setUsers] = useState<CardType[]>([])
+  const [members, setMembers] = useState<{ userID: string }[]>([])
   const [isConnected, setIsConnected] = useState(false)
 
   useEffect(() => {
     socket.on('connect', () => {
       console.log('socket connected!!')
+      socket.emit('member', { userID, action: 'join' })
       setIsConnected(true)
     })
     socket.on('disconnect', () => {
       console.log('socket disconnected!!')
+      socket.emit('member', { userID, action: 'leave' })
       setIsConnected(false)
+    })
+
+    socket.on('member', (data: MemberResType) => {
+      switch (data.action) {
+        case 'join':
+          setMembers((prev) => {
+            return [
+              ...prev.filter((value) => {
+                return value.userID !== data.userID
+              }),
+              { userID: data.userID },
+            ]
+          })
+          break
+        case 'leave':
+          setMembers((prev) => {
+            return prev.filter((value) => {
+              return value.userID !== data.userID
+            })
+          })
+          break
+      }
     })
 
     socket.on('room', (data: CardType) => {
@@ -70,6 +99,11 @@ const Home: NextPage = () => {
         <h1 className="py-4 text-lg font-semibold">プランニングポーカー部屋</h1>
       </header>
       <div className="py-4">{isConnected ? 'コネクト中' : 'ディスコネクト中'}</div>
+      <div className="py-4">
+        {members.map((member, index) => {
+          return <p key={member.userID}>{`${index + 1}人目 ${member.userID}`}</p>
+        })}
+      </div>
       <div className="py-4">
         {users.map((user, index) => {
           return (

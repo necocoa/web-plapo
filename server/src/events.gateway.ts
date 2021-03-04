@@ -7,7 +7,6 @@ import {
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
-  WsResponse,
 } from '@nestjs/websockets'
 import { Server, Socket } from 'socket.io'
 
@@ -22,23 +21,24 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     this.logger.log('Initialized!')
   }
 
-  handleConnection(client: Socket, ..._args: any[]) {
-    this.logger.log(`Client connected:    ${client.id}`)
+  handleConnection(_client: Socket, ..._args: any[]) {
+    // this.logger.log(`Client connected:    ${client.id}`)
   }
 
-  handleDisconnect(client: Socket) {
-    this.logger.log(`Client disconnected: ${client.id}`)
+  handleDisconnect(_client: Socket) {
+    // this.logger.log(`Client disconnected: ${client.id}`)
   }
 
-  @SubscribeMessage('message')
-  handleMessage(@MessageBody() data: any): WsResponse<string> {
-    this.logger.log(`Send message: ${JSON.stringify(data)}`)
-    return { event: 'message', data }
-  }
+  // WsResponse<string>
 
   @SubscribeMessage('room')
   handleRoom(@MessageBody() data: any): void {
     this.logger.log(`${JSON.stringify(data)}`)
     this.wss.emit('room', data)
+  }
+
+  @SubscribeMessage('member')
+  handleMember(@MessageBody() data: any): void {
+    this.wss.emit('member', data)
   }
 }
