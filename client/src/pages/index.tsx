@@ -59,10 +59,10 @@ const Home: NextPage = () => {
     })
 
     socket.on('room', (data: CardType) => {
-      setUsers((prevState) => {
+      setUsers((prev) => {
         return [
-          ...prevState.filter((state) => {
-            return state.userID !== data.userID
+          ...prev.filter((value) => {
+            return value.userID !== data.userID
           }),
           data,
         ]
@@ -72,12 +72,12 @@ const Home: NextPage = () => {
     return () => {
       socket.close()
     }
-  }, [socket])
+  }, [socket]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (isConnected) return
 
-    console.log('socket reconnected!!')
+    console.log('socket reconnect...')
     socket.close()
     setSocket(() => {
       return io(publicEnv.apiURL)
