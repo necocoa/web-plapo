@@ -21,7 +21,6 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     // インポート関連
     'import/newline-after-import': 'error',
-    'import/no-default-export': 'error',
     'simple-import-sort/imports': 'error',
     'simple-import-sort/exports': 'error',
   },
