@@ -1,8 +1,8 @@
 module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
-  parserOptions: { ecmaVersion: 2021, sourceType: 'module' },
-  env: { es2021: true, jest: true, node: true },
+  parserOptions: { sourceType: 'module', project: './tsconfig.json' },
+  env: { es2020: true, jest: true, node: true },
   plugins: ['import', 'simple-import-sort'],
   extends: [
     'eslint:recommended',
@@ -10,7 +10,7 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'prettier',
   ],
-  ignorePatterns: ['.eslintrc.js', 'node_modules/'],
+  ignorePatterns: ['.eslintrc.js'],
   rules: {
     'no-console': 'off',
     'no-restricted-syntax': ['error', 'TSEnumDeclaration'],
