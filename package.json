@@ -15,6 +15,7 @@
     "se:lint": "yarn se lint",
     "cl:lint": "yarn cl lint",
     "all:lint": "run-p se:lint cl:lint",
+    "format": "prettier --write .",
     "se:format": "yarn se format",
     "cl:format": "yarn cl format",
     "all:format": "run-p se:format cl:format",
