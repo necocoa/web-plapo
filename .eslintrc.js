@@ -12,7 +12,7 @@ module.exports = {
   ],
   ignorePatterns: ['.eslintrc.js'],
   rules: {
-    'no-console': 'off',
+    'no-console': ['error', { allow: ['warn', 'info', 'error'] }],
     'no-restricted-syntax': ['error', 'TSEnumDeclaration'],
     'prefer-arrow-callback': 'error',
     'arrow-body-style': ['error', 'always'],

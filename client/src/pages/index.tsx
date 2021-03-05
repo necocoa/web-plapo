@@ -21,11 +21,11 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     socket.on('connect', () => {
-      console.log('socket connected!!')
+      console.info('socket connected!!')
       setIsConnected(true)
     })
     socket.on('disconnect', () => {
-      console.log('socket disconnected!!')
+      console.info('socket disconnected!!')
       setIsConnected(false)
     })
 
@@ -48,7 +48,7 @@ const Home: NextPage = () => {
   useEffect(() => {
     if (isConnected) return
 
-    console.log('socket reconnected!!')
+    console.info('socket reconnected!!')
     socket.close()
     setSocket(() => {
       return io(publicEnv.apiURL)
