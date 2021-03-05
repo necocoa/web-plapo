@@ -1,25 +1,13 @@
 module.exports = {
-  root: true,
-  parser: '@typescript-eslint/parser',
-  parserOptions: { ecmaVersion: 2021, sourceType: 'module', ecmaFeatures: { jsx: true } },
+  parserOptions: { ecmaFeatures: { jsx: true } },
   settings: { react: { version: 'detect' } },
-  env: { es2021: true, browser: true, jest: true, node: true },
-  plugins: ['import', 'simple-import-sort', 'react-hooks'],
-  extends: [
-    'eslint:recommended',
-    'plugin:@typescript-eslint/eslint-recommended',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:react/recommended',
-    'plugin:jsx-a11y/recommended',
-    'prettier',
-  ],
-  ignorePatterns: ['out/', '.next/'],
+  env: { browser: true },
+  plugins: ['react-hooks'],
+  extends: ['plugin:react/recommended', 'plugin:jsx-a11y/recommended'],
   rules: {
-    'no-console': 'off',
-    'no-restricted-syntax': ['error', { selector: 'TSEnumDeclaration', message: "Don't declare enums" }],
-    'prefer-arrow-callback': 'error',
     'func-style': ['error', 'expression'],
-    'arrow-body-style': ['error', 'always'],
+
+    // React 関係
     'no-restricted-imports': ['error', { paths: [{ name: 'react', importNames: ['default'] }] }],
     'react/prop-types': 'off',
     'react/react-in-jsx-scope': 'off',
@@ -27,14 +15,12 @@ module.exports = {
     'react/destructuring-assignment': ['error', 'never'],
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
-    'import/newline-after-import': 'error',
+
+    // Import 関係
     'import/no-default-export': 'error',
-    'simple-import-sort/imports': 'error',
-    'simple-import-sort/exports': 'error',
-    '@typescript-eslint/no-explicit-any': 'off',
-    '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/consistent-type-imports': ['warn', { prefer: 'type-imports' }],
-    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+
+    // Linkコンポーネントとa11yの干渉回避
     'jsx-a11y/anchor-is-valid': [
       'error',
       { components: ['Link'], specialLink: ['hrefLeft', 'hrefRight'], aspects: ['invalidHref', 'preferButton'] },
