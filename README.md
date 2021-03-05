@@ -74,3 +74,13 @@ yarn add -WD eslint
 yarn workspace server add ts-node
 yarn se add ts-node
 ```
+
+## プロセスが切れない時
+
+NestJS のプロセスが立ちっぱなしになることがある
+ポートからプロセスを探し、PID を指定してキルする
+
+```
+lsof -i :3001
+kill -9 PID 00000
+```

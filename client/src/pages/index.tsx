@@ -26,12 +26,12 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     socket.on('connect', () => {
-      console.log('socket connected!!')
+      console.info('socket connected!!')
       socket.emit('member', { userID, action: 'join' })
       setIsConnected(true)
     })
     socket.on('disconnect', () => {
-      console.log('socket disconnected!!')
+      console.info('socket disconnected!!')
       socket.emit('member', { userID, action: 'leave' })
       setIsConnected(false)
     })
@@ -77,7 +77,7 @@ const Home: NextPage = () => {
   useEffect(() => {
     if (isConnected) return
 
-    console.log('socket reconnect...')
+    console.info('socket reconnected!!')
     socket.close()
     setSocket(() => {
       return io(publicEnv.apiURL)
