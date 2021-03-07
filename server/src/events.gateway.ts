@@ -53,7 +53,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
         cacheData = JSON.parse(cacheRes)
       }
       const setData = { ...cacheData, ...data }
-      console.log(setData)
+      console.info(setData)
       const setDataStr = JSON.stringify(setData)
       await this.cacheManager.set('member', setDataStr, { ttl: 1000 })
       this.wss.emit('cache', setData)

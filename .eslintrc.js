@@ -14,7 +14,6 @@ module.exports = {
     'no-console': ['error', { allow: ['warn', 'info', 'error'] }],
     'no-restricted-syntax': ['error', 'TSEnumDeclaration'],
     'prefer-arrow-callback': 'error',
-    'arrow-body-style': ['error', 'always'],
     'import/newline-after-import': 'error',
     'simple-import-sort/imports': 'error',
     'simple-import-sort/exports': 'error',

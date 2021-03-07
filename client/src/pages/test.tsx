@@ -4,25 +4,23 @@ import { useEffect, useState } from 'react'
 import io from 'socket.io-client'
 
 const Home: NextPage = () => {
-  const [socket, setSocket] = useState(() => {
-    return io(publicEnv.apiURL)
-  })
+  const [socket, setSocket] = useState(() => io(publicEnv.apiURL))
   const [isConnected, setIsConnected] = useState(false)
   const [inputKey, setInputKey] = useState('')
   const [inputValue, setInputValue] = useState('')
 
   useEffect(() => {
     socket.on('connect', () => {
-      console.log('socket connected!!')
+      console.info('socket connected!!')
       setIsConnected(true)
     })
     socket.on('disconnect', () => {
-      console.log('socket disconnected!!')
+      console.info('socket disconnected!!')
       setIsConnected(false)
     })
 
     socket.on('cache', (data: any) => {
-      console.log(data)
+      console.info(data)
     })
 
     return () => {
@@ -33,14 +31,12 @@ const Home: NextPage = () => {
   useEffect(() => {
     if (isConnected) return
 
-    console.log('socket reconnect...')
+    console.info('socket reconnect...')
     socket.close()
-    setSocket(() => {
-      return io(publicEnv.apiURL)
-    })
+    setSocket(() => io(publicEnv.apiURL))
   }, [isConnected]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const submit = () => {
+  const handleClick = () => {
     socket.emit('cache', { [inputKey]: inputValue })
     setInputKey('')
     setInputValue('')
@@ -50,22 +46,18 @@ const Home: NextPage = () => {
       <input
         type="text"
         value={inputKey}
-        onChange={(e) => {
-          return setInputKey(e.target.value)
-        }}
+        onChange={(e) => setInputKey(e.target.value)}
         size={20}
         className="px-6 py-2 border"
       />
       <input
         type="text"
         value={inputValue}
-        onChange={(e) => {
-          return setInputValue(e.target.value)
-        }}
+        onChange={(e) => setInputValue(e.target.value)}
         size={20}
         className="px-6 py-2 border"
       />
-      <button type="button" onClick={submit} className="px-4 py-2 bg-blue-300 border rounded">
+      <button type="button" onClick={handleClick} className="px-4 py-2 bg-blue-300 border rounded">
         クリック
       </button>
     </div>

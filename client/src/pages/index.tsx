@@ -15,9 +15,7 @@ type MemberResType = {
 }
 
 const Home: NextPage = () => {
-  const [socket, setSocket] = useState(() => {
-    return io(publicEnv.apiURL)
-  })
+  const [socket, setSocket] = useState(() => io(publicEnv.apiURL))
   const cardsNum: CardNum[] = [0, 1, 2, 3, 5, 8, 13, 21, 44]
   const userID = useUserID()
   const [users, setUsers] = useState<CardType[]>([])
@@ -59,14 +57,12 @@ const Home: NextPage = () => {
     })
 
     socket.on('room', (data: CardType) => {
-      setUsers((prev) => {
-        return [
-          ...prev.filter((value) => {
-            return value.userID !== data.userID
-          }),
-          data,
-        ]
-      })
+      setUsers((prev) => [
+        ...prev.filter((value) => {
+          return value.userID !== data.userID
+        }),
+        data,
+      ])
     })
 
     return () => {
@@ -79,12 +75,10 @@ const Home: NextPage = () => {
 
     console.info('socket reconnected!!')
     socket.close()
-    setSocket(() => {
-      return io(publicEnv.apiURL)
-    })
+    setSocket(() => io(publicEnv.apiURL))
   }, [isConnected]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const cardClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const handleCardClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault()
     const cardNumStr = event.currentTarget.dataset.num
     if (!cardNumStr) return
@@ -100,24 +94,22 @@ const Home: NextPage = () => {
       </header>
       <div className="py-4">{isConnected ? 'コネクト中' : 'ディスコネクト中'}</div>
       <div className="py-4">
-        {members.map((member, index) => {
-          return <p key={member.userID}>{`${index + 1}人目 ${member.userID}`}</p>
-        })}
+        {members.map((member, index) => (
+          <p key={member.userID}>{`${index + 1}人目 ${member.userID}`}</p>
+        ))}
       </div>
       <div className="py-4">
-        {users.map((user, index) => {
-          return (
-            <div key={index}>
-              <dd>{user.userID}</dd>
-              <dt>{user.cardNum}</dt>
-            </div>
-          )
-        })}
+        {users.map((user, index) => (
+          <div key={index}>
+            <dd>{user.userID}</dd>
+            <dt>{user.cardNum}</dt>
+          </div>
+        ))}
       </div>
       <div>
-        {cardsNum.map((num, index) => {
-          return <Card key={index} num={num} disabled={!isConnected} onClick={cardClick} />
-        })}
+        {cardsNum.map((num, index) => (
+          <Card key={index} num={num} disabled={!isConnected} onClick={handleCardClick} />
+        ))}
       </div>
     </div>
   )
