@@ -10,7 +10,7 @@ module.exports = {
     'import/no-default-export': 'error',
     '@typescript-eslint/consistent-type-imports': ['warn', { prefer: 'type-imports' }],
     // React 関係
-    'no-restricted-imports': ['error', { paths: [{ name: 'react', importNames: ['default'] }] }],
+    'no-restricted-imports': ['error', { paths: [{ name: 'react', importNames: ['default', 'FC'] }] }],
     'react/prop-types': 'off',
     'react/react-in-jsx-scope': 'off',
     'react/display-name': 'error',

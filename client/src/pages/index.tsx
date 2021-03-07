@@ -78,7 +78,7 @@ const Home: NextPage = () => {
     setSocket(() => io(publicEnv.apiURL))
   }, [isConnected]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleCardClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const handleCardClick: React.MouseEventHandler<HTMLButtonElement> = (event) => {
     event.preventDefault()
     const cardNumStr = event.currentTarget.dataset.num
     if (!cardNumStr) return
@@ -95,20 +95,20 @@ const Home: NextPage = () => {
       <div className="py-4">{isConnected ? 'コネクト中' : 'ディスコネクト中'}</div>
       <div className="py-4">
         {members.map((member, index) => (
-          <p key={member.userID}>{`${index + 1}人目 ${member.userID}`}</p>
+          <p key={`member-${member.userID}`}>{`${index + 1}人目 ${member.userID}`}</p>
         ))}
       </div>
       <div className="py-4">
-        {users.map((user, index) => (
-          <div key={index}>
+        {users.map((user) => (
+          <div key={`user-${userID}`}>
             <dd>{user.userID}</dd>
             <dt>{user.cardNum}</dt>
           </div>
         ))}
       </div>
       <div>
-        {cardsNum.map((num, index) => (
-          <Card key={index} num={num} disabled={!isConnected} onClick={handleCardClick} />
+        {cardsNum.map((num) => (
+          <Card key={`card-${num}`} num={num} disabled={!isConnected} onClick={handleCardClick} />
         ))}
       </div>
     </div>
@@ -120,7 +120,7 @@ export default Home
 type CardProps = {
   num: CardNum
   disabled: boolean
-  onClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
+  onClick: React.MouseEventHandler<HTMLButtonElement>
 }
 const Card: React.VFC<CardProps> = (props) => {
   return (
