@@ -75,3 +75,10 @@ NestJS のプロセスが立ちっぱなしになることがある
 lsof -i :3001
 kill -9 PID 00000
 ```
+
+## Docker イメージを試す
+
+```
+docker build --tag web-plapo:0.4.1 .
+docker run -p 3001:3001 --name web-plapo_server_local web-plapo:0.4.1
+```

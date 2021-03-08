@@ -1,26 +1,33 @@
-FROM node:12-alpine as build
+FROM node:12-slim as build
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
 COPY package.json yarn.lock ./
 COPY /server ./server
 
-RUN yarn install --pure-lockfile --non-interactive
+RUN yarn install --non-interactive --frozen-lockfile
 
 RUN yarn se build
 
 
-FROM node:12-alpine
+FROM node:12-slim as node_modules
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
 COPY package.json yarn.lock ./
+COPY /server ./server
 
-COPY --from=build /usr/src/app/server/package.json /usr/src/app/server/package.json
-COPY --from=build /usr/src/app/server/dist /usr/src/app/server/dist
+RUN yarn install --non-interactive --frozen-lockfile --prod
+
+
+FROM gcr.io/distroless/nodejs:12
+
+WORKDIR /app
+
+COPY --from=build /app/server/dist /app/server/dist
+COPY --from=node_modules /app/node_modules /app/node_modules
+COPY --from=node_modules /app/server/node_modules /app/server/node_modules
 
 ENV NODE_ENV production
 
-RUN yarn install --pure-lockfile --non-interactive --prod
-
-CMD ["node", "server/dist/main"]
+CMD ["server/dist/main"]
