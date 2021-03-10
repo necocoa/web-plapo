@@ -1,4 +1,4 @@
-FROM node:12-slim as build
+FROM node:14-slim as build
 
 WORKDIR /app
 
@@ -10,7 +10,7 @@ RUN yarn install --non-interactive --frozen-lockfile
 RUN yarn se build
 
 
-FROM node:12-slim as node_modules
+FROM node:14-slim as node_modules
 
 WORKDIR /app
 
@@ -20,7 +20,7 @@ COPY /server ./server
 RUN yarn install --non-interactive --frozen-lockfile --prod
 
 
-FROM gcr.io/distroless/nodejs:12
+FROM gcr.io/distroless/nodejs:14
 
 WORKDIR /app
 
