@@ -11,7 +11,7 @@ module.exports = {
     'prettier',
   ],
   rules: {
-    'no-console': ['error', { allow: ['warn', 'info', 'error'] }],
+    'no-console': ['warn', { allow: ['warn', 'info', 'error'] }],
     'no-restricted-syntax': ['error', 'TSEnumDeclaration'],
     'prefer-arrow-callback': 'error',
     'import/newline-after-import': 'error',
