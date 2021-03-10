@@ -7,6 +7,7 @@ import {
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
+  WsResponse,
 } from '@nestjs/websockets'
 import { Cache } from 'cache-manager'
 import { Server, Socket } from 'socket.io'
@@ -44,20 +45,33 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     this.wss.emit('member', data)
   }
 
-  @SubscribeMessage('cache')
-  handleCache(@MessageBody() data: any): void {
-    const handle = async () => {
-      const cacheRes = await this.cacheManager.get<string>('member')
-      let cacheData = {}
-      if (cacheRes) {
-        cacheData = JSON.parse(cacheRes)
-      }
-      const setData = { ...cacheData, ...data }
-      console.info(setData)
-      const setDataStr = JSON.stringify(setData)
-      await this.cacheManager.set('member', setDataStr, { ttl: 1000 })
-      this.wss.emit('cache', setData)
-    }
-    handle()
+  @SubscribeMessage('roomMembers')
+  handleRoomMembers(@MessageBody() data: roomMemberType[]): WsResponse<roomMemberType[]> {
+    return { event: 'roomMembers', data }
   }
+
+  @SubscribeMessage('roomJoin')
+  async handleRoomJoin(@MessageBody() data: roomMemberType) {
+    const roomMembersCache = await this.getRoomMembersCache()
+    const roomMembers = [
+      ...roomMembersCache.filter((value) => value.userID !== data.userID),
+      { userID: data.userID, cardNumber: data.cardNumber },
+    ]
+    await this.cacheManager.set('roomMembers', JSON.stringify(roomMembers), { ttl: 1000 })
+    this.wss.emit('roomMembers', roomMembers)
+  }
+
+  private async getRoomMembersCache() {
+    let cacheRoomMembers: roomMemberType[] = []
+    const cacheRoomMembersRes = await this.cacheManager.get<string>('roomMembers')
+    if (cacheRoomMembersRes) {
+      cacheRoomMembers = JSON.parse(cacheRoomMembersRes) as roomMemberType[]
+    }
+    return cacheRoomMembers
+  }
+}
+
+export type roomMemberType = {
+  userID: string
+  cardNumber: number | null
 }

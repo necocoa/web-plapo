@@ -25,13 +25,16 @@ const Home: NextPage = () => {
   useEffect(() => {
     socket.on('connect', () => {
       console.info('socket connected!!')
-      socket.emit('member', { userID, action: 'join' })
+      socket.emit('roomJoin', { userID, cardNumber: null })
       setIsConnected(true)
     })
     socket.on('disconnect', () => {
       console.info('socket disconnected!!')
       socket.emit('member', { userID, action: 'leave' })
       setIsConnected(false)
+    })
+    socket.on('roomMembers', (data: any) => {
+      console.log(data)
     })
 
     socket.on('member', (data: MemberResType) => {
