@@ -30,7 +30,7 @@ const Home: NextPage = () => {
     })
     socket.on('disconnect', () => {
       console.info('socket disconnected!!')
-      socket.emit('member', { userID, action: 'leave' })
+      socket.emit('roomLeave', { userID })
       setIsConnected(false)
     })
     socket.on('roomMembers', (data: any) => {
@@ -90,12 +90,21 @@ const Home: NextPage = () => {
     socket.emit('room', data)
   }
 
+  const roomLeave = () => {
+    socket.emit('roomLeave', { userID })
+  }
+
   return (
     <div className="px-20 pt-4">
       <header>
         <h1 className="py-4 text-lg font-semibold">プランニングポーカー部屋</h1>
       </header>
       <div className="py-4">{isConnected ? 'コネクト中' : 'ディスコネクト中'}</div>
+      <div className="py-4">
+        <button type="button" onClick={roomLeave} className="px-3 py-2 text-white bg-red-400 rounded shadow">
+          退室
+        </button>
+      </div>
       <div className="py-4">
         {members.map((member, index) => (
           <p key={`member-${member.userID}`}>{`${index + 1}人目 ${member.userID}`}</p>

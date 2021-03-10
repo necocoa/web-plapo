@@ -25,14 +25,12 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   }
 
   handleConnection(_client: Socket, ..._args: any[]) {
-    // this.logger.log(`Client connected:    ${client.id}`)
+    // this.logger.log(`Client connected:    ${_client.id}`)
   }
 
   handleDisconnect(_client: Socket) {
-    // this.logger.log(`Client disconnected: ${client.id}`)
+    // this.logger.log(`Client disconnected: ${_client.id}`)
   }
-
-  // WsResponse<string>
 
   @SubscribeMessage('room')
   handleRoom(@MessageBody() data: any): void {
@@ -57,6 +55,14 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       ...roomMembersCache.filter((value) => value.userID !== data.userID),
       { userID: data.userID, cardNumber: data.cardNumber },
     ]
+    await this.cacheManager.set('roomMembers', JSON.stringify(roomMembers), { ttl: 1000 })
+    this.wss.emit('roomMembers', roomMembers)
+  }
+
+  @SubscribeMessage('roomLeave')
+  async handleRoomLeave(@MessageBody() data: { userID: string }) {
+    const roomMembersCache = await this.getRoomMembersCache()
+    const roomMembers = [...roomMembersCache.filter((value) => value.userID !== data.userID)]
     await this.cacheManager.set('roomMembers', JSON.stringify(roomMembers), { ttl: 1000 })
     this.wss.emit('roomMembers', roomMembers)
   }
