@@ -39,7 +39,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
   @SubscribeMessage('cardPick')
   handleCardPick(@MessageBody() data: roomMemberType) {
-    this.wss.emit('roomMemberUpdate', data)
+    this.wss.emit('cardPick', data)
   }
 
   @SubscribeMessage('roomMembers')
@@ -78,5 +78,6 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
 export type roomMemberType = {
   userID: string
+  name: string | null
   cardNumber: number | null
 }

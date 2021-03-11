@@ -7,6 +7,7 @@ import { useUserID } from 'src/hooks/useUserID'
 type CardNum = 0 | 1 | 2 | 3 | 5 | 8 | 13 | 21 | 44
 type userType = {
   userID: string
+  name: string
   cardNum: CardNum | null
 }
 
@@ -14,6 +15,7 @@ const Home: NextPage = () => {
   const [socket, setSocket] = useState(() => io(publicEnv.apiURL))
   const cardsNum: CardNum[] = [0, 1, 2, 3, 5, 8, 13, 21, 44]
   const userID = useUserID()
+  const [name, setName] = useState<string>('')
   const [members, setMembers] = useState<userType[]>([])
   const [isConnected, setIsConnected] = useState(false)
 
@@ -31,6 +33,10 @@ const Home: NextPage = () => {
     socket.on('roomMembers', (data: userType[]) => setMembers(data))
 
     socket.on('roomMemberUpdate', (data: userType) => {
+      setMembers((prev) => [...prev.filter((value) => value.userID !== data.userID), data])
+    })
+
+    socket.on('cardPick', (data: userType) => {
       setMembers((prev) => [...prev.filter((value) => value.userID !== data.userID), data])
     })
 
@@ -52,11 +58,13 @@ const Home: NextPage = () => {
     const cardNumStr = event.currentTarget.dataset.num
     if (!cardNumStr) return
     const cardNum = parseInt(cardNumStr) as CardNum
-    const data: userType = { userID, cardNum }
+    const data: userType = { userID, name, cardNum }
     socket.emit('cardPick', data)
   }
 
   const roomLeave = () => socket.emit('roomLeave', { userID })
+
+  const roomMemberUpdate = () => socket.emit('roomMemberUpdate', { userID, name })
 
   return (
     <div className="px-20 pt-4">
@@ -64,6 +72,26 @@ const Home: NextPage = () => {
         <h1 className="py-4 text-lg font-semibold">プランニングポーカー部屋</h1>
       </header>
       <div className="py-4">{isConnected ? 'コネクト中' : 'ディスコネクト中'}</div>
+      <div className="py-4">
+        <label htmlFor="namedInput" className="mr-2">
+          名前
+        </label>
+        <input
+          id="namedInput"
+          type="text"
+          name="name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="px-3 py-1 mr-2 border rounded-sm shadow"
+        />
+        <button
+          type="button"
+          onClick={roomMemberUpdate}
+          className="px-3 py-2 text-white bg-blue-400 rounded shadow"
+        >
+          更新
+        </button>
+      </div>
       <div className="py-4">
         <button
           type="button"
@@ -76,8 +104,17 @@ const Home: NextPage = () => {
       <div className="py-4">
         {members.map((member) => (
           <div key={`member-${member.userID}`}>
-            <dd>{member.userID}</dd>
-            <dt>{member.cardNum}</dt>
+            <div className="flex">
+              <div>ID: {member.userID}</div>
+              <div>Name: {member.name}</div>
+            </div>
+            <div
+              className={`flex justify-center items-center w-8 h-12 font-semibold text-white rounded shadow ${
+                member.cardNum !== undefined ? 'bg-blue-400' : 'bg-gray-50 border'
+              }`}
+            >
+              {member.cardNum}
+            </div>
           </div>
         ))}
       </div>
