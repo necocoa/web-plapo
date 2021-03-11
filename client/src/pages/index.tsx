@@ -97,16 +97,16 @@ type CardProps = {
   disabled: boolean
   onClick: React.MouseEventHandler<HTMLButtonElement>
 }
-const Card: React.VFC<CardProps> = (props) => {
+const Card: React.VFC<CardProps> = ({ num, disabled, onClick }) => {
   return (
     <button
       type="button"
-      onClick={props.onClick}
-      disabled={props.disabled}
-      data-num={props.num}
+      onClick={onClick}
+      disabled={disabled}
+      data-num={num}
       className="px-4 py-2 mx-2 font-semibold text-white bg-blue-400 rounded shadow focus:opacity-80 focus:shadow-none disabled:bg-gray-300 disabled:shadow-none disabled:cursor-default"
     >
-      {props.num}
+      {num}
     </button>
   )
 }
