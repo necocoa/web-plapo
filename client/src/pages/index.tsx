@@ -5,21 +5,16 @@ import io from 'socket.io-client'
 import { useUserID } from 'src/hooks/useUserID'
 
 type CardNum = 0 | 1 | 2 | 3 | 5 | 8 | 13 | 21 | 44
-type CardType = {
+type userType = {
   userID: string
-  cardNum: CardNum
-}
-type MemberResType = {
-  userID: string
-  action: 'join' | 'leave'
+  cardNum: CardNum | null
 }
 
 const Home: NextPage = () => {
   const [socket, setSocket] = useState(() => io(publicEnv.apiURL))
   const cardsNum: CardNum[] = [0, 1, 2, 3, 5, 8, 13, 21, 44]
   const userID = useUserID()
-  const [users, setUsers] = useState<CardType[]>([])
-  const [members, setMembers] = useState<{ userID: string }[]>([])
+  const [members, setMembers] = useState<userType[]>([])
   const [isConnected, setIsConnected] = useState(false)
 
   useEffect(() => {
@@ -33,39 +28,12 @@ const Home: NextPage = () => {
       socket.emit('roomLeave', { userID })
       setIsConnected(false)
     })
-    socket.on('roomMembers', (data: any) => {
-      console.log(data)
+    socket.on('roomMembers', (data: userType[]) => {
+      setMembers(data)
     })
 
-    socket.on('member', (data: MemberResType) => {
-      switch (data.action) {
-        case 'join':
-          setMembers((prev) => {
-            return [
-              ...prev.filter((value) => {
-                return value.userID !== data.userID
-              }),
-              { userID: data.userID },
-            ]
-          })
-          break
-        case 'leave':
-          setMembers((prev) => {
-            return prev.filter((value) => {
-              return value.userID !== data.userID
-            })
-          })
-          break
-      }
-    })
-
-    socket.on('room', (data: CardType) => {
-      setUsers((prev) => [
-        ...prev.filter((value) => {
-          return value.userID !== data.userID
-        }),
-        data,
-      ])
+    socket.on('room', (data: userType) => {
+      setMembers((prev) => [...prev.filter((value) => value.userID !== data.userID), data])
     })
 
     return () => {
@@ -86,7 +54,7 @@ const Home: NextPage = () => {
     const cardNumStr = event.currentTarget.dataset.num
     if (!cardNumStr) return
     const cardNum = parseInt(cardNumStr) as CardNum
-    const data: CardType = { userID, cardNum }
+    const data: userType = { userID, cardNum }
     socket.emit('room', data)
   }
 
@@ -101,20 +69,19 @@ const Home: NextPage = () => {
       </header>
       <div className="py-4">{isConnected ? 'コネクト中' : 'ディスコネクト中'}</div>
       <div className="py-4">
-        <button type="button" onClick={roomLeave} className="px-3 py-2 text-white bg-red-400 rounded shadow">
+        <button
+          type="button"
+          onClick={roomLeave}
+          className="px-3 py-2 text-white bg-red-400 rounded shadow"
+        >
           退室
         </button>
       </div>
       <div className="py-4">
-        {members.map((member, index) => (
-          <p key={`member-${member.userID}`}>{`${index + 1}人目 ${member.userID}`}</p>
-        ))}
-      </div>
-      <div className="py-4">
-        {users.map((user) => (
-          <div key={`user-${userID}`}>
-            <dd>{user.userID}</dd>
-            <dt>{user.cardNum}</dt>
+        {members.map((member) => (
+          <div key={`member-${member.userID}`}>
+            <dd>{member.userID}</dd>
+            <dt>{member.cardNum}</dt>
           </div>
         ))}
       </div>
