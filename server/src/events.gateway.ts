@@ -52,7 +52,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     const roomMembersCache = await this.getRoomMembersCache()
     const roomMembers = [
       ...roomMembersCache.filter((value) => value.userID !== data.userID),
-      { userID: data.userID, cardNumber: data.cardNumber },
+      { userID: data.userID, cardNum: data.cardNum },
     ]
     await this.cacheManager.set('roomMembers', JSON.stringify(roomMembers), { ttl: 1000 })
     this.wss.emit('roomMembers', roomMembers)
@@ -79,5 +79,5 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 export type roomMemberType = {
   userID: string
   name: string | null
-  cardNumber: number | null
+  cardNum: number | null
 }

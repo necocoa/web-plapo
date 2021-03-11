@@ -22,7 +22,7 @@ const Home: NextPage = () => {
   useEffect(() => {
     socket.on('connect', () => {
       console.info('socket connected!!')
-      socket.emit('roomJoin', { userID, cardNumber: null })
+      socket.emit('roomJoin', { userID, cardNum: null })
       setIsConnected(true)
     })
     socket.on('disconnect', () => {
@@ -37,7 +37,14 @@ const Home: NextPage = () => {
     })
 
     socket.on('cardPick', (data: userType) => {
-      setMembers((prev) => [...prev.filter((value) => value.userID !== data.userID), data])
+      setMembers((prev) =>
+        prev.map((member) => {
+          if (member.userID !== data.userID) return member
+
+          member.cardNum = data.cardNum
+          return member
+        })
+      )
     })
 
     return () => {
@@ -110,7 +117,7 @@ const Home: NextPage = () => {
             </div>
             <div
               className={`flex justify-center items-center w-8 h-12 font-semibold text-white rounded shadow ${
-                member.cardNum !== undefined ? 'bg-blue-400' : 'bg-gray-50 border'
+                member.cardNum === null ? 'bg-gray-50 border' : 'bg-blue-400'
               }`}
             >
               {member.cardNum}
