@@ -10,7 +10,10 @@ module.exports = {
     'import/no-default-export': 'error',
     '@typescript-eslint/consistent-type-imports': ['warn', { prefer: 'type-imports' }],
     // React 関係
-    'no-restricted-imports': ['error', { paths: [{ name: 'react', importNames: ['default', 'FC'] }] }],
+    'no-restricted-imports': [
+      'error',
+      { paths: [{ name: 'react', importNames: ['default', 'FC'] }] },
+    ],
     'react/prop-types': 'off',
     'react/react-in-jsx-scope': 'off',
     'react/display-name': 'error',
@@ -20,7 +23,11 @@ module.exports = {
     // Linkコンポーネントとa11yの干渉回避
     'jsx-a11y/anchor-is-valid': [
       'error',
-      { components: ['Link'], specialLink: ['hrefLeft', 'hrefRight'], aspects: ['invalidHref', 'preferButton'] },
+      {
+        components: ['Link'],
+        specialLink: ['hrefLeft', 'hrefRight'],
+        aspects: ['invalidHref', 'preferButton'],
+      },
     ],
   },
   overrides: [{ files: ['src/pages/**/*.tsx'], rules: { 'import/no-default-export': 'off' } }],
