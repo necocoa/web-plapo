@@ -21,19 +21,26 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     socket.on('connect', () => {
-      console.info('socket connected!!')
+      // console.info('socket connected!!')
       socket.emit('roomJoin', { userID, cardNum: null })
       setIsConnected(true)
     })
     socket.on('disconnect', () => {
-      console.info('socket disconnected!!')
+      // console.info('socket disconnected!!')
       socket.emit('roomLeave', { userID })
       setIsConnected(false)
     })
     socket.on('roomMembers', (data: userType[]) => setMembers(data))
 
-    socket.on('roomMemberUpdate', (data: userType) => {
-      setMembers((prev) => [...prev.filter((value) => value.userID !== data.userID), data])
+    socket.on('roomMemberNameUpdate', (data: userType) => {
+      setMembers((prev) =>
+        prev.map((member) => {
+          if (member.userID !== data.userID) return member
+
+          member.name = data.name
+          return member
+        })
+      )
     })
 
     socket.on('cardPick', (data: userType) => {
@@ -71,7 +78,7 @@ const Home: NextPage = () => {
 
   const roomLeave = () => socket.emit('roomLeave', { userID })
 
-  const roomMemberUpdate = () => socket.emit('roomMemberUpdate', { userID, name })
+  const roomMemberNameUpdate = () => socket.emit('roomMemberNameUpdate', { userID, name })
 
   return (
     <div className="px-20 pt-4">
@@ -93,7 +100,7 @@ const Home: NextPage = () => {
         />
         <button
           type="button"
-          onClick={roomMemberUpdate}
+          onClick={roomMemberNameUpdate}
           className="px-3 py-2 text-white bg-blue-400 rounded shadow"
         >
           更新
@@ -111,10 +118,7 @@ const Home: NextPage = () => {
       <div className="py-4">
         {members.map((member) => (
           <div key={`member-${member.userID}`}>
-            <div className="flex">
-              <div>ID: {member.userID}</div>
-              <div>Name: {member.name}</div>
-            </div>
+            <div>Name: {member.name || '匿名さん'}</div>
             <div
               className={`flex justify-center items-center w-8 h-12 font-semibold text-white rounded shadow ${
                 member.cardNum === null ? 'bg-gray-50 border' : 'bg-blue-400'

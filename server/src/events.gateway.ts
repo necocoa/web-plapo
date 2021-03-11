@@ -37,6 +37,11 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     this.wss.emit('roomMemberUpdate', data)
   }
 
+  @SubscribeMessage('roomMemberNameUpdate')
+  handleRoomMemberNameUpdate(@MessageBody() data: roomMemberType) {
+    this.wss.emit('roomMemberNameUpdate', data)
+  }
+
   @SubscribeMessage('cardPick')
   handleCardPick(@MessageBody() data: roomMemberType) {
     this.wss.emit('cardPick', data)
