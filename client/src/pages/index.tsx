@@ -28,11 +28,9 @@ const Home: NextPage = () => {
       socket.emit('roomLeave', { userID })
       setIsConnected(false)
     })
-    socket.on('roomMembers', (data: userType[]) => {
-      setMembers(data)
-    })
+    socket.on('roomMembers', (data: userType[]) => setMembers(data))
 
-    socket.on('room', (data: userType) => {
+    socket.on('roomMemberUpdate', (data: userType) => {
       setMembers((prev) => [...prev.filter((value) => value.userID !== data.userID), data])
     })
 
@@ -55,12 +53,10 @@ const Home: NextPage = () => {
     if (!cardNumStr) return
     const cardNum = parseInt(cardNumStr) as CardNum
     const data: userType = { userID, cardNum }
-    socket.emit('room', data)
+    socket.emit('cardPick', data)
   }
 
-  const roomLeave = () => {
-    socket.emit('roomLeave', { userID })
-  }
+  const roomLeave = () => socket.emit('roomLeave', { userID })
 
   return (
     <div className="px-20 pt-4">

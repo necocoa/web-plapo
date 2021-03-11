@@ -32,15 +32,14 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     // this.logger.log(`Client disconnected: ${_client.id}`)
   }
 
-  @SubscribeMessage('room')
-  handleRoom(@MessageBody() data: any): void {
-    this.logger.log(`${JSON.stringify(data)}`)
-    this.wss.emit('room', data)
+  @SubscribeMessage('roomMemberUpdate')
+  handleRoomMemberUpdate(@MessageBody() data: roomMemberType) {
+    this.wss.emit('roomMemberUpdate', data)
   }
 
-  @SubscribeMessage('member')
-  handleMember(@MessageBody() data: any): void {
-    this.wss.emit('member', data)
+  @SubscribeMessage('cardPick')
+  handleCardPick(@MessageBody() data: roomMemberType) {
+    this.wss.emit('roomMemberUpdate', data)
   }
 
   @SubscribeMessage('roomMembers')
